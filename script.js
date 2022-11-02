@@ -12,7 +12,7 @@ function setup() {
 }
 
 
-//step two
+//step two: make HTML Elements in JS
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
   let underorderedListEl = document.createElement("ul");
@@ -21,6 +21,7 @@ function makePageForEpisodes(episodeList) {
       let headerDiv  = document.createElement("div");
       let spanTitle= document.createElement("span");
       spanTitle.innerText= episode.name;
+      headerDiv.classList.add('top');
       headerDiv.appendChild(spanTitle);
       headerDiv.append("-")
       let spanSeries= document.createElement("span");
@@ -32,6 +33,7 @@ function makePageForEpisodes(episodeList) {
       let pic = document.createElement("img");
       pic.setAttribute("src", episode.image.medium);
       bodyDiv.appendChild(pic);
+      bodyDiv.classList.add('bottom');
       let para = document.createElement("p");
       para.innerHTML=episode.summary;
       bodyDiv.append(para);
