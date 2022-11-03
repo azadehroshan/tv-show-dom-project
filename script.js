@@ -47,6 +47,7 @@ rootElem.appendChild(underorderedListEl);
 let input = document.getElementById("search");
 input.addEventListener("keyup",(event)=>{
   const allEpisodes = getAllEpisodes(); // data comes form it 
+  
   let keyword = event.target.value.toLowerCase(); // User type in input 
   let result = [];
   allEpisodes.forEach( x =>{ 
@@ -72,6 +73,7 @@ function makeSelectBoxForEpisode( episodeList ){
 }
 // step five- set roll up and down list of episodes  
 selectItems.addEventListener("change",()=>{
+
   const allEpisodes = getAllEpisodes(); 
   allEpisodes.forEach( nameList =>{
     if( nameList.id == event.target.value ){
