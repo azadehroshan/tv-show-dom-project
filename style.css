@@ -2,23 +2,23 @@
   /* color: red; */
 }
 
-#root ul{
+#root .episods-list{
   display:flex;
   flex-wrap:wrap;
   justify-content:space-between;
    list-style:none;
 }
 
-#root ul li{
+#root .episods-list li{
   width:30%;;
   padding:15px;
 }
 
-#root ul li img{
+#root .episods-list li img{
   width:100%;
   
 }
-#root ul li .top{
+#root .episods-list li .top{
   padding:10px ;
   text-align:center;
   border:2px solid #333;
@@ -26,9 +26,57 @@
 }
 
 
-#root ul li .botten{
+#root .episods-list li .botten{
   padding:10px ;
   text-align:center;
   border:2px solid #333;
   border-radius:7px;
+}
+
+.show-list-con{ 
+}
+
+.show-list-con ul { 
+  padding:20px;
+  list-style:none;
+}
+ 
+.show-list-con ul li{ 
+  padding:20px;;
+  margin:10px 0;
+  box-shadow: 0 0 5px #888;
+}
+
+
+.show-list-con ul li{ 
+  padding:20px;;
+}
+.show-list-con h5{
+  font-size:22px;
+  margin:0;;
+  padding:15px 0;
+}
+.show-list-con .bottom{ 
+  display:flex;
+  flex-wrap:wrap
+}
+
+.show-list-con .bottom .left{ 
+  width:70%;
+  min-width:250px;
+}
+.show-list-con .bottom .right{ 
+  width:30%
+}
+.show-list-con .bottom .left{ 
+  display:flex; 
+}
+.show-list-con .bottom .left img{ 
+  width:100px;
+  height:150px;
+  object-fit:cover
+}
+.show-list-con .bottom .left p{ 
+  padding:0 10px;
+  margin:0;
 }
