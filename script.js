@@ -1,23 +1,25 @@
 //You can edit ALL of the code here
 
-  let selectItems= document.getElementById("selectEpisode");
-  let span = document.getElementById("search-result"); //span for dispaly
+let selectItems= document.getElementById("selectEpisode");
+let span = document.getElementById("search-result"); //span for dispaly
   
   
 // step one
 async function setup(){
-  const allEpisodes = await getAllEpisodes();
+  let specificShow = document.getElementById("root").getAttribute('showid');
+  const allEpisodes = await getAllEpisodes( specificShow );
   const allShow = getAllShows();
   makeSelectShowList( allShow );
   makeSelectBoxForEpisode( allEpisodes );
-  // makePageForEpisodes( allEpisodes ); 
-  makePageForShow( allShow );
+  makePageForEpisodes( allEpisodes); 
+  // makePageForShow( allShow );
+  setEvent();
 }
 
 
 //step two: make HTML Elements in JS
-function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
+function makePageForEpisodes(episodeList ) {
+  const rootElem = document.getElementById("root"); 
   let underorderedListEl = document.createElement("ul");
   underorderedListEl.classList.add('episods-list')
       episodeList.forEach(episode => {    
@@ -47,10 +49,13 @@ function makePageForEpisodes(episodeList) {
 rootElem.innerHTML = '';
 rootElem.appendChild(underorderedListEl);
 }
+
+
 //step three- give search feature
 let input = document.getElementById("search");
-input.addEventListener("keyup",async (event)=>{
-  const allEpisodes = await getAllEpisodes(); // data comes form it 
+input.addEventListener("keyup",async (event) => {
+  let specificShow = document.getElementById("root").getAttribute('showid')
+  const allEpisodes = await getAllEpisodes( specificShow ); // data comes form it 
   
   let keyword = event.target.value.toLowerCase(); // User type in input 
   let result = [];
@@ -66,7 +71,7 @@ input.addEventListener("keyup",async (event)=>{
 })
 // step seven-level 400
 let showSelect = document.querySelector("#showSelect");
-function makeSelectShowList(showList){
+function makeSelectShowList(showList){ 
   showList.forEach( list =>{
     let inputlist= document.createElement("option");
     inputlist.setAttribute("value" ,list.id );
@@ -76,8 +81,11 @@ function makeSelectShowList(showList){
 }
 
 
-showSelect.addEventListener("change",async event=>{
-  makePageForEpisodes( await getShow(event.target.value) ); 
+showSelect.addEventListener("change",async event =>{
+  let showList = await getShow(event.target.value);
+  document.getElementById("root").setAttribute('showid' ,event.target.value); 
+  makePageForEpisodes( showList ); 
+  makeSelectBoxForEpisode(showList);
 })
 
 async function getShow(show_id){
@@ -91,10 +99,11 @@ async function getShow(show_id){
 
 
 // step four- episode list in select element
-function makeSelectBoxForEpisode( episodeList ){ 
+function makeSelectBoxForEpisode( episodeList  ){ 
+  selectItems.innerHTML = '';
   episodeList.forEach(list => {
-    let inputlist= document.createElement("option");
-    inputlist.setAttribute("value", list.id);
+    let inputlist= document.createElement("option");  
+    inputlist.setAttribute("value" ,list.id );
     inputlist.innerText = `S0${list.season}E${list.number > 9 ? list.number:"0"+ list.number} - ${list.name}`
     selectItems.append(inputlist);
   })
@@ -103,7 +112,9 @@ function makeSelectBoxForEpisode( episodeList ){
  
 // step five- set roll up and down list of episodes  
 selectItems.addEventListener("change",async (event) =>{ 
-  const allEpisodes = await getAllEpisodes();   
+  const rootElem = document.getElementById("root");
+  const allEpisodes = await getAllEpisodes( rootElem.getAttribute('showid') );  
+  console.log(event.target.value) 
   allEpisodes.forEach( nameList =>{
     if( nameList.id == event.target.value ){
       makePageForEpisodes( [nameList] ); 
@@ -112,14 +123,12 @@ selectItems.addEventListener("change",async (event) =>{
 }) 
 
  
-//level350 /add async and wait line 8,9//
-async function getAllEpisodes() {  
-  let allEpisodes = await fetch("https://api.tvmaze.com/shows/82/episodes");
+//level350 /add async and wait line 8,9// update in level 500
+async function getAllEpisodes(id) {  
+  let allEpisodes = await fetch(`https://api.tvmaze.com/shows/${id}/episodes`);
   return await allEpisodes.json(); 
-}
-
-
-
+} 
+ 
 window.onload = setup;
 
 
@@ -131,12 +140,13 @@ window.onload = setup;
   let ul= document.createElement("ul")
   div.appendChild(ul);
 
-  allShow.forEach( show => { 
-    let li = document.createElement("li")
+  allShow.forEach( show => {  
+    let li = document.createElement("li"); 
     let divTop= document.createElement("div")
     divTop.classList.add("top")
     li.appendChild(divTop)
     let h5= document.createElement("h5")
+    h5.setAttribute('id' ,show.id)
     h5.innerText= show.name;
     divTop.appendChild(h5)
     let divBottom= document.createElement("div")
@@ -166,19 +176,30 @@ window.onload = setup;
 
     ul.appendChild( li );
   }) 
-  const root = document.getElementById("root").appendChild( div );
+  document.getElementById("root").appendChild( div );
   
 }
 
 
 
-  function makeShowDetails( key , value ){
-    let p = document.createElement('p'); 
-    let b = document.createElement('b');
-    b.innerText = key ;
-    p.appendChild(b);
-    let span = document.createElement('span');
-    span.innerText = value;
-    p.appendChild(span);
-    return p;
-  }
+function makeShowDetails( key , value ){
+  let p = document.createElement('p'); 
+  let b = document.createElement('b');
+  b.innerText = key ;
+  p.appendChild(b);
+  let span = document.createElement('span');
+  span.innerText = value;
+  p.appendChild(span);
+  return p;
+}
+
+
+function setEvent(){
+  let list = document.querySelectorAll('.show-list-con li h5');
+  list.forEach( item => { 
+    item.addEventListener('click' ,async (event)=>{ 
+      let allEpisode = await getAllEpisodes(event.target.id);
+      makePageForEpisodes(allEpisode); 
+    });
+  })
+}
