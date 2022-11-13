@@ -2,24 +2,22 @@
 
 let selectItems= document.getElementById("selectEpisode");
 let span = document.getElementById("search-result"); //span for dispaly
-  
+let root = document.getElementById("root");
   
 // step one
 async function setup(){
-  let specificShow = document.getElementById("root").getAttribute('showid');
-  const allEpisodes = await getAllEpisodes( specificShow );
+  // let specificShow = root.getAttribute('showid');
+  // const allEpisodes = await getAllEpisodes( specificShow );
   const allShow = getAllShows();
   makeSelectShowList( allShow );
-  makeSelectBoxForEpisode( allEpisodes );
-  makePageForEpisodes( allEpisodes); 
-  // makePageForShow( allShow );
+  // makeSelectBoxForEpisode( allEpisodes );
+  // makePageForEpisodes( allEpisodes); 
+  makePageForShow( allShow );
   setEvent();
 }
 
-
 //step two: make HTML Elements in JS
-function makePageForEpisodes(episodeList ) {
-  const rootElem = document.getElementById("root"); 
+function makePageForEpisodes(episodeList ) { 
   let underorderedListEl = document.createElement("ul");
   underorderedListEl.classList.add('episods-list')
       episodeList.forEach(episode => {    
@@ -46,15 +44,14 @@ function makePageForEpisodes(episodeList ) {
       listItemEl.appendChild(bodyDiv);
       underorderedListEl.appendChild(listItemEl);  
 });
-rootElem.innerHTML = '';
-rootElem.appendChild(underorderedListEl);
+root.innerHTML = '';
+root.appendChild(underorderedListEl);
 }
-
 
 //step three- give search feature
 let input = document.getElementById("search");
 input.addEventListener("keyup",async (event) => {
-  let specificShow = document.getElementById("root").getAttribute('showid')
+  let specificShow = root.getAttribute('showid')
   const allEpisodes = await getAllEpisodes( specificShow ); // data comes form it 
   
   let keyword = event.target.value.toLowerCase(); // User type in input 
@@ -66,9 +63,14 @@ input.addEventListener("keyup",async (event) => {
          result.push( x );
       }  
   })   
-  span.innerText= `Displaying ${result.length}/${allEpisodes.length} Episodes`;
+  updateEpisdesDetails(result.length ,allEpisodes.length); 
   makePageForEpisodes( result );
 })
+
+function updateEpisdesDetails( show ,total ){
+  span.innerText= `Displaying ${show}/${total} Episodes`;
+}
+
 // step seven-level 400
 let showSelect = document.querySelector("#showSelect");
 function makeSelectShowList(showList){ 
@@ -80,10 +82,9 @@ function makeSelectShowList(showList){
   })
 }
 
-
 showSelect.addEventListener("change",async event =>{
   let showList = await getShow(event.target.value);
-  document.getElementById("root").setAttribute('showid' ,event.target.value); 
+  root.setAttribute('showid' ,event.target.value); 
   makePageForEpisodes( showList ); 
   makeSelectBoxForEpisode(showList);
 })
@@ -92,11 +93,6 @@ async function getShow(show_id){
   let allEpisodes = await fetch(`https://api.tvmaze.com/shows/${show_id}/episodes`);
   return await allEpisodes.json(); 
 }
-
-
-
-
-
 
 // step four- episode list in select element
 function makeSelectBoxForEpisode( episodeList  ){ 
@@ -111,9 +107,8 @@ function makeSelectBoxForEpisode( episodeList  ){
 
  
 // step five- set roll up and down list of episodes  
-selectItems.addEventListener("change",async (event) =>{ 
-  const rootElem = document.getElementById("root");
-  const allEpisodes = await getAllEpisodes( rootElem.getAttribute('showid') );  
+selectItems.addEventListener("change",async (event) =>{  
+  const allEpisodes = await getAllEpisodes( root.getAttribute('showid') );  
   console.log(event.target.value) 
   allEpisodes.forEach( nameList =>{
     if( nameList.id == event.target.value ){
@@ -175,11 +170,11 @@ window.onload = setup;
 
 
     ul.appendChild( li );
-  }) 
-  document.getElementById("root").appendChild( div );
+  })  
+  root.innerHTML = '';
+  root.appendChild( div );
   
 }
-
 
 
 function makeShowDetails( key , value ){
@@ -200,6 +195,38 @@ function setEvent(){
     item.addEventListener('click' ,async (event)=>{ 
       let allEpisode = await getAllEpisodes(event.target.id);
       makePageForEpisodes(allEpisode); 
+      handleShowSelect(false); 
+      handleEpisodeSelect(true);
+      handleBackButton(true);
+      updateEpisdesDetails(allEpisode.length ,allEpisode.length)
+      makeSelectBoxForEpisode( allEpisode );
+      handleEpisodesDetails(true);
     });
   })
 }
+
+function handleShowSelect( status ){  //true //false
+  document.querySelector("#showSelect").style.display = status ? "block" : "none";
+  
+}
+function handleEpisodeSelect(status){
+  document.querySelector("#selectEpisode").style.display = status ? "block" :"none";
+}
+
+function handleBackButton(status){
+  document.querySelector("#back").style.display= status ? "block" :"none" ; 
+}
+
+function handleEpisodesDetails(status){
+    span.style.display= status ? "block" :"none" ; 
+}
+
+document.querySelector("#back").addEventListener("click", ()=>{
+  const allShow = getAllShows();
+  makePageForShow( allShow );
+  setEvent();
+  handleShowSelect(true);
+  handleEpisodeSelect(false);
+  handleBackButton(false);
+  handleEpisodesDetails(false);
+})

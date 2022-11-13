@@ -47,7 +47,11 @@
   box-shadow: 0 0 5px #888;
 }
 
-
+.search-content{
+  display:flex;
+  justify-content:space-between;
+  padding:20px 5px;
+}
 .show-list-con ul li{ 
   padding:20px;;
 }
