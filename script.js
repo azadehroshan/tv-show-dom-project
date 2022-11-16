@@ -3,6 +3,7 @@
 let selectItems= document.getElementById("selectEpisode");
 let span = document.getElementById("search-result"); //span for dispaly
 let root = document.getElementById("root");
+let input = document.getElementById("search"); /// search step three
   
 // step one
 async function setup(){
@@ -48,23 +49,37 @@ root.innerHTML = '';
 root.appendChild(underorderedListEl);
 }
 
-//step three- give search feature
-let input = document.getElementById("search");
+//step three- give search feature 
 input.addEventListener("keyup",async (event) => {
-  let specificShow = root.getAttribute('showid')
-  const allEpisodes = await getAllEpisodes( specificShow ); // data comes form it 
-  
-  let keyword = event.target.value.toLowerCase(); // User type in input 
+  let whitchPage = input.getAttribute('whitchPage'); 
+  let keyword = event.target.value.toLowerCase(); 
   let result = [];
-  allEpisodes.forEach( x =>{ 
-    let summary = x.summary.toLowerCase();
-    let name    = x.name.toLowerCase(); //winter is coming 
-      if( summary.indexOf( keyword ) > -1 || name.indexOf(keyword) > -1 ){
-         result.push( x );
-      }  
-  })   
-  updateEpisdesDetails(result.length ,allEpisodes.length); 
-  makePageForEpisodes( result );
+  if( whitchPage == 'show' ){
+    const allShow = getAllShows();  
+    allShow.forEach( x =>{ 
+      let summary = x.summary.toLowerCase();
+      let name    = x.name.toLowerCase(); //winter is coming 
+        if( summary.indexOf( keyword ) > -1 || name.indexOf(keyword) > -1 ){
+          result.push( x );
+        }  
+    })    
+    makeSelectShowList( result ); 
+    makePageForShow( result );
+    setEvent();
+  }else{
+    let specificShow = root.getAttribute('showid');
+    const allEpisodes = await getAllEpisodes( specificShow ); // data comes form it   
+    allEpisodes.forEach( x =>{ 
+      let summary = x.summary.toLowerCase();
+      let name    = x.name.toLowerCase(); //winter is coming 
+        if( summary.indexOf( keyword ) > -1 || name.indexOf(keyword) > -1 ){
+          result.push( x );
+        }  
+    })   
+    updateEpisdesDetails(result.length ,allEpisodes.length); 
+    makePageForEpisodes( result );
+  }
+
 })
 
 function updateEpisdesDetails( show ,total ){
@@ -95,8 +110,13 @@ async function getShow(show_id){
 }
 
 // step four- episode list in select element
-function makeSelectBoxForEpisode( episodeList  ){ 
+function makeSelectBoxForEpisode( episodeList ){ 
   selectItems.innerHTML = '';
+    let emptyOption = document.createElement("option");   
+    emptyOption.innerText ='All Episode';
+    emptyOption.setAttribute("value" ,'all' );
+    selectItems.append(emptyOption); 
+    
   episodeList.forEach(list => {
     let inputlist= document.createElement("option");  
     inputlist.setAttribute("value" ,list.id );
@@ -108,11 +128,12 @@ function makeSelectBoxForEpisode( episodeList  ){
  
 // step five- set roll up and down list of episodes  
 selectItems.addEventListener("change",async (event) =>{  
-  const allEpisodes = await getAllEpisodes( root.getAttribute('showid') );  
-  console.log(event.target.value) 
+  const allEpisodes = await getAllEpisodes( root.getAttribute('showid') );   
   allEpisodes.forEach( nameList =>{
     if( nameList.id == event.target.value ){
       makePageForEpisodes( [nameList] ); 
+    }else if( 'all' == event.target.value ){
+      makePageForEpisodes( allEpisodes );
     }
   })
 }) 
@@ -201,6 +222,9 @@ function setEvent(){
       updateEpisdesDetails(allEpisode.length ,allEpisode.length)
       makeSelectBoxForEpisode( allEpisode );
       handleEpisodesDetails(true);
+      root.setAttribute('showid' ,event.target.id ); 
+      input.setAttribute('whitchPage' ,'episode');
+      input.value ='';
     });
   })
 }
@@ -229,4 +253,8 @@ document.querySelector("#back").addEventListener("click", ()=>{
   handleEpisodeSelect(false);
   handleBackButton(false);
   handleEpisodesDetails(false);
+  root.setAttribute('showid' ,'' ); 
+  input.setAttribute('whitchPage' ,'show');
+  input.value ='';
 })
+
