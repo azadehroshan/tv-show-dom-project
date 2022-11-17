@@ -3,17 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TV Show Project | My Name (My GitHub username)</title>
+    <title>TV Show Project | Azadeh Roshanbakhsh-Ghanbari (azadehroshan)</title>
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
-    <div id="root">
+    <div class = "search-content">
+      <select id="showSelect"> 
+      </select>
+      <select id="selectEpisode" style="display:none"> 
+      </select> 
+      <input id="search" whitchPage="show" placeholder="search here"> 
+      <span id="search-result" style="display:none"></span>
+      <button id="back" style="display:none;">Back</button>
     </div>
+    <div id="root" showid="">
+    </div>
+<!-- 
+    <div class="show-list-con">
+      <ul>
+        <li> 
+          <div class="top">
+            <h5>Example screenshots of Shows Listing</h5> 
+          </div>
+          <div class="bottom">
+          <div class="left">
+            <img src="https://static.tvmaze.com/uploads/images/medium_landscape/1/2671.jpg" alt="">
+            <p>
+              Continue to get the list of shows the same way you did in level 400. (You do not need to fetch it.)
+              Continue to get the list of shows the same way you did in level 400. (You do not need to fetch it.)
+              Continue to get the list of shows the same way you did in level 400. (You do not need to fetch it.)
+              Continue to get the list of shows the same way you did in level 400. (You do not need to fetch it.)
+              Continue to get the list of shows the same way you did in level 400. (You do not need to fetch it.)Continue to get
+              the list of shows the same way you did in level 400. (You do not need to fetch it.)
+            </p>
+          </div>
+            <div class="right">
+                <p><b>Rated:</b><span>8</span></p>
+                <p><b>Generes:</b> <span>Drum</span></p>
+                <p><b>Status:</b><span>Ended</span></p>
+                <p><b>Runtime:</b><span>60</span></p>
+            </div>
+
+          </div>
+        </li>
+      </ul>
+    </div> -->
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
+    <script src="shows.js"></script>
 
     <!-- Loads YOUR javascript code -->
     <script src="script.js"></script>
